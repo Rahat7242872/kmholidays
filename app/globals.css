@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-jakarta), var(--font-bangla), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-jakarta), var(--font-bangla), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-bangla), ui-sans-serif, system-ui, sans-serif;
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* KM Holidays brand palette — taken from the official logo:
+   indigo "K", orange "M", and the purple -> orange -> teal swoosh. */
+@theme {
+  --color-ink: #1b1d55;
+  --color-brand: #2e3192;
+  --color-brand-700: #222470;
+  --color-brand-50: #eef0fb;
+  --color-brand-100: #dcdff6;
+  --color-paper: #f6f6fb;
+  --color-soft: #eceefa;
+  --color-cta: #ef7d12;
+  --color-cta-600: #d96a06;
+  --color-sun: #f7941d;
+  --color-grape: #5b2a8c;
+  --color-teal: #17a3b8;
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-slow-zoom: slow-zoom 14s ease-out both;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slow-zoom {
+    from { transform: scale(1.12); }
+    to { transform: scale(1); }
+  }
+}
+
+:root {
+  --background: #f6f6fb;
+  --foreground: #1b1d55;
+  --card: #ffffff;
+  --card-foreground: #1b1d55;
+  --popover: #ffffff;
+  --popover-foreground: #1b1d55;
+  --primary: #2e3192;
+  --primary-foreground: #ffffff;
+  --secondary: #eef0fb;
+  --secondary-foreground: #1b1d55;
+  --muted: #eef1f7;
+  --muted-foreground: #5f6b85;
+  --accent: #fff3e6;
+  --accent-foreground: #1b1d55;
+  --destructive: #d4472f;
+  --border: #e3e8f2;
+  --input: #d5dceb;
+  --ring: #2e3192;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans scroll-smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    /* Stop decorative blobs / wide rows from causing sideways scroll on phones (clip keeps sticky working). */
+    overflow-x: clip;
+  }
+  /* iOS Safari: date inputs otherwise centre their value and collapse when empty. */
+  input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 1.5em;
+  }
+  input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+  h1, h2, h3 {
+    @apply font-display font-bold tracking-tight;
+  }
+  h1 em, h2 em {
+    font-style: normal;
+  }
+}
+
+@layer utilities {
+  /* Signature swoosh gradient from the logo */
+  .bg-swoosh { background-image: linear-gradient(90deg, #5b2a8c 0%, #8a3d96 25%, #e8592b 55%, #f7941d 72%, #17a3b8 100%); }
+  .text-swoosh { background-image: linear-gradient(90deg, #f7941d, #e8592b 45%, #c74bb0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .text-balance { text-wrap: balance; }
+}
+
+/* Phones: iOS zooms the page when a focused field is under 16px. Unlayered, so it beats text-[15px] utilities. */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Phones: pages with the sticky booking bar need extra room so it doesn't cover the footer. */
+@media (max-width: 1023px) {
+  body:has([data-mobile-cta]) footer {
+    padding-bottom: calc(9.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Sections fade up as they scroll into view (CSS scroll-driven animation; browsers without support just show them). */
+@keyframes km-reveal {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: km-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
