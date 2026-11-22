@@ -228,7 +228,7 @@ export default async function ListingPage({ params, searchParams }: Props) {
                 listingId={listing.id}
                 listingTitle={listing.title}
                 category={listing.category}
-                showTravelFields={listing.category === 'tour' || listing.category === 'hotel'}
+                showTravelFields={listing.category !== 'service'}
                 defaults={defaults}
                 submitLabel={ctaLabel}
               />

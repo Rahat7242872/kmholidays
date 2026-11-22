@@ -1,5 +1,6 @@
 import { boolean, integer, jsonb, pgTable, real, serial, text, timestamp } from "drizzle-orm/pg-core";
 import type { ListingDetails } from "@/lib/listing-details";
+import type { Answer } from "@/lib/booking-fields";
 import type { OrderDocument } from "@/lib/order-document";
 
 export const users = pgTable("users", {
@@ -57,6 +58,8 @@ export const inquiries = pgTable("inquiries", {
   travelDate: text("travel_date").notNull().default(""),
   travelers: integer("travelers"),
   message: text("message").notNull().default(""),
+  // Service-specific answers from the booking form (passport, visa type, rooms…) — see lib/booking-fields.ts
+  answers: jsonb("answers").$type<Answer[]>().notNull().default([]),
   status: text("status").notNull().default("new"), // new | contacted | confirmed | closed
   // Admin-entered data for the order PDF (see lib/order-document.ts)
   document: jsonb("document").$type<OrderDocument>().notNull().default({}),

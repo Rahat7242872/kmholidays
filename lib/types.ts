@@ -1,3 +1,4 @@
+import type { Answer } from '@/lib/booking-fields';
 import type { ListingDetails } from '@/lib/listing-details';
 import type { OrderDocument } from '@/lib/order-document';
 import type { Category } from '@/lib/site';
@@ -41,6 +42,7 @@ export type Inquiry = {
   travelDate: string;
   travelers: number | null;
   message: string;
+  answers: Answer[];
   status: InquiryStatus;
   document: OrderDocument;
   createdAt: string;

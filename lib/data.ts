@@ -23,6 +23,7 @@ import {
   type ListingRow,
   type MessageRow,
 } from '@/db/schema';
+import { normalizeAnswers } from '@/lib/booking-fields';
 import { normalizeDetails } from '@/lib/listing-details';
 import { normalizeDocument, type OrderDocument } from '@/lib/order-document';
 import { seedListings } from '@/lib/seed-data';
@@ -83,7 +84,7 @@ async function readLocal(): Promise<LocalDb> {
     // Older files lack the newer collections, so fill in defaults.
     const data = { ...emptyExtras, ...(JSON.parse(await fs.readFile(LOCAL_FILE, "utf8")) as Partial<LocalDb>) } as LocalDb;
     data.listings = (data.listings ?? []).map((l) => ({ ...l, details: normalizeDetails(l.details) }));
-    data.inquiries = (data.inquiries ?? []).map((q) => ({ ...q, document: normalizeDocument(q.document) }));
+    data.inquiries = (data.inquiries ?? []).map((q) => ({ ...q, answers: normalizeAnswers(q.answers), document: normalizeDocument(q.document) }));
     return data;
   } catch {
     const now = new Date().toISOString();
@@ -128,7 +129,7 @@ function fromListingRow(row: ListingRow): Listing {
 
 function fromInquiryRow(row: InquiryRow): Inquiry {
   const status = (INQUIRY_STATUSES as readonly string[]).includes(row.status) ? (row.status as InquiryStatus) : 'new';
-  return { ...row, status, document: normalizeDocument(row.document), createdAt: row.createdAt.toISOString() };
+  return { ...row, status, answers: normalizeAnswers(row.answers), document: normalizeDocument(row.document), createdAt: row.createdAt.toISOString() };
 }
 
 /* ------------------------------------------------------------------ */

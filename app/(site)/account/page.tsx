@@ -11,6 +11,7 @@ import { getT } from '@/lib/i18n-server';
 import { requestLabel } from '@/lib/site';
 import type { InquiryStatus } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { formatAnswer } from '@/lib/booking-fields';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'My account', robots: { index: false } };
@@ -91,6 +92,13 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                     {r.travelDate && <span>{a.travel}: {r.travelDate}</span>}
                     {r.travelers && <span>{r.travelers} {a.travellers}</span>}
                   </p>
+                  {r.answers.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {r.answers.filter((x) => x.key !== 'contactVia' && x.key !== 'contactTime').slice(0, 5).map((x) => (
+                        <span key={x.key} className="rounded-md bg-paper px-2 py-1 text-[11px] text-ink/75 ring-1 ring-border/70"><span className="text-muted-foreground">{x.label}:</span> <b className="font-semibold">{formatAnswer(x)}</b></span>
+                      ))}
+                    </div>
+                  )}
                   {r.message && <p className="mt-2 line-clamp-2 text-sm whitespace-pre-line text-ink/70">{r.message}</p>}
                 </li>
               ))}

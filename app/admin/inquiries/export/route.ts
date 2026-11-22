@@ -20,9 +20,9 @@ export async function GET(req: NextRequest) {
     return true;
   });
 
-  const header = ['ID', 'Date', 'Status', 'Type', 'Item', 'Name', 'Phone', 'Email', 'Travel date', 'Travellers', 'Message', 'Member'];
+  const header = ['ID', 'Date', 'Status', 'Type', 'Item', 'Name', 'Phone', 'Email', 'Travel date', 'Travellers', 'Message', 'Details', 'Member'];
   const lines = rows.map((i) =>
-    [i.id, new Date(i.createdAt).toISOString(), i.status, requestLabel(i.category), i.listingTitle, i.name, i.phone, i.email, i.travelDate, i.travelers ?? '', i.message, i.userId ? 'yes' : 'no']
+    [i.id, new Date(i.createdAt).toISOString(), i.status, requestLabel(i.category), i.listingTitle, i.name, i.phone, i.email, i.travelDate, i.travelers ?? '', i.message, i.answers.map((a) => `${a.label}: ${a.value}`).join('; '), i.userId ? 'yes' : 'no']
       .map(csvCell)
       .join(','),
   );

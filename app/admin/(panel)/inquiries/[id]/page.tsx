@@ -7,9 +7,11 @@ import { DocumentForm } from '@/components/admin/document-form';
 import { PageHeader, Panel, StatusBadge } from '@/components/admin/ui';
 import { SafeImage } from '@/components/site/safe-image';
 import { getInquiryById, getListingById, getUserById } from '@/lib/data';
+import { formatAnswer } from '@/lib/booking-fields';
 import { orderNo, type LineItem } from '@/lib/order-document';
 import { categoryMeta, formatPrice, requestLabel } from '@/lib/site';
 import { INQUIRY_STATUSES, type Listing } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 const fmt = (iso: string, time = false) =>
   new Date(iso).toLocaleString('en-GB', time ? { dateStyle: 'medium', timeStyle: 'short' } : { dateStyle: 'medium' });
@@ -115,6 +117,19 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
                 {inquiry.travelDate && <Info icon={CalendarDays} label="Travel date">{fmt(inquiry.travelDate)}</Info>}
                 {inquiry.travelers && <Info icon={Users} label="Travellers">{inquiry.travelers}</Info>}
               </div>
+              {inquiry.answers.length > 0 && (
+                <div className="rounded-xl ring-1 ring-border/70">
+                  <p className="border-b px-4 py-2.5 text-xs font-bold tracking-wide text-brand uppercase">{inquiry.category === 'visa' ? 'Applicant information' : 'Booking information'}</p>
+                  <dl className="grid sm:grid-cols-2">
+                    {inquiry.answers.map((a) => (
+                      <div key={a.key} className="flex flex-col gap-0.5 border-b border-dashed px-4 py-2.5 last:border-b-0 sm:odd:border-r">
+                        <dt className="text-[11px] font-semibold text-muted-foreground">{a.label}</dt>
+                        <dd className={cn('text-sm font-bold break-words text-ink', a.key === 'passportNo' && 'font-mono tracking-wider')}>{formatAnswer(a)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              )}
               {inquiry.message && (
                 <div className="rounded-xl bg-paper p-4">
                   <p className="mb-1.5 flex items-center gap-2 text-xs font-bold text-muted-foreground"><MessageSquareText className="size-4 text-brand" /> Customer message</p>

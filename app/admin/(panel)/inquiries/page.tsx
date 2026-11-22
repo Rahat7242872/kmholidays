@@ -4,6 +4,7 @@ import { deleteInquiryAction, setInquiryStatus } from '@/app/admin/actions';
 import { ConfirmButton, SubmitButton } from '@/components/admin/confirm-button';
 import { PageHeader, Panel, StatusBadge } from '@/components/admin/ui';
 import { getInquiries } from '@/lib/data';
+import { formatAnswer } from '@/lib/booking-fields';
 import { requestLabel } from '@/lib/site';
 import { INQUIRY_STATUSES, type Inquiry, type InquiryStatus } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -147,6 +148,13 @@ export default async function InquiriesPage({ searchParams }: { searchParams: Pr
                   <span className="text-muted-foreground">{requestLabel(i.category)}: </span>
                   <span className="font-medium">{i.listingTitle || 'General inquiry'}</span>
                 </div>
+                {i.answers.length > 0 && (
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {i.answers.filter((a) => a.key !== 'contactVia' && a.key !== 'contactTime').slice(0, 4).map((a) => (
+                      <span key={a.key} className="rounded-md bg-brand-50 px-2 py-1 text-[11px] text-brand"><span className="opacity-70">{a.label}:</span> <b>{formatAnswer(a)}</b></span>
+                    ))}
+                  </div>
+                )}
                 <ul className="mt-3 mb-4 space-y-1.5 text-sm">
                   <li className="flex items-center gap-2"><Phone className="size-4 text-brand" /><a href={`tel:${phoneDigits}`} className="font-medium hover:underline">{i.phone}</a></li>
                   {i.email && <li className="flex items-center gap-2"><Mail className="size-4 text-brand" /><a href={`mailto:${i.email}`} className="truncate hover:underline">{i.email}</a></li>}

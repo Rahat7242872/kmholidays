@@ -4,7 +4,8 @@ import { useActionState } from 'react';
 import { useSession } from 'next-auth/react';
 import { ArrowUpRight, CheckCircle2, Loader2, Send } from 'lucide-react';
 import { submitInquiry, type InquiryState } from '@/app/actions/inquiry';
-import { useT } from '@/components/i18n-provider';
+import { useLocale, useT } from '@/components/i18n-provider';
+import { bookingFields } from '@/lib/booking-fields';
 import { site, type Category, type RequestType } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -35,7 +36,12 @@ export function InquiryForm({
   const [state, action, pending] = useActionState(submitInquiry, initial);
   const me = useSession().data?.user;
   const t = useT().form;
+  const locale = useLocale();
   const v = state.values ?? {};
+  const kind = category ?? requestType;
+  const extra = bookingFields(kind);
+  const dateLabel = kind === 'hotel' ? t.checkIn : kind === 'esim' ? t.travelFrom : t.travelDate;
+  const paxLabel = kind === 'visa' ? t.applicants : kind === 'hotel' ? t.guests : t.travellers;
 
   if (state.ok) {
     return (
@@ -81,15 +87,52 @@ export function InquiryForm({
       {showTravelFields && (
         <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label htmlFor="iq-date" className={label}>{t.travelDate}</label>
+            <label htmlFor="iq-date" className={label}>{dateLabel}</label>
             <input id="iq-date" name="travelDate" type="date" defaultValue={v.travelDate ?? defaults.travelDate} className={field} />
           </div>
           <div>
-            <label htmlFor="iq-travelers" className={label}>{t.travellers}</label>
+            <label htmlFor="iq-travelers" className={label}>{paxLabel}</label>
             <input id="iq-travelers" name="travelers" type="number" min={1} max={999} defaultValue={v.travelers ?? defaults.travelers ?? 2} inputMode="numeric" className={field} />
           </div>
         </div>
       )}
+      {extra.length > 0 && (
+        <fieldset className="rounded-2xl bg-paper p-3.5 ring-1 ring-border/60 sm:p-4">
+          <legend className="sr-only">{t.more}</legend>
+          <p className="mb-3 text-sm font-extrabold text-ink">
+            {t.more} <span className="text-xs font-medium text-muted-foreground">· {t.optional}</span>
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {extra.map((f) => {
+              const id = `iq-ans-${f.key}`;
+              const name = `ans.${f.key}`;
+              const def = v[name] ?? '';
+              return (
+                <div key={f.key} className={cn(f.wide && 'sm:col-span-2')}>
+                  <label htmlFor={id} className={label}>{f.label[locale]}</label>
+                  {f.type === 'select' ? (
+                    <select id={id} name={name} defaultValue={def} className={cn(field, 'cursor-pointer', !def && 'text-ink/50')} onChange={(e) => e.currentTarget.classList.toggle('text-ink/50', !e.currentTarget.value)}>
+                      <option value="">{t.select}</option>
+                      {f.options?.map((opt) => <option key={opt.value} value={opt.value} className="text-ink">{opt.label[locale]}</option>)}
+                    </select>
+                  ) : (
+                    <input
+                      id={id}
+                      name={name}
+                      type={f.type}
+                      defaultValue={def}
+                      placeholder={f.placeholder?.[locale]}
+                      {...(f.type === 'number' ? { min: 0, max: 999, inputMode: 'numeric' as const } : {})}
+                      className={cn(field, f.upper && 'uppercase placeholder:normal-case')}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </fieldset>
+      )}
+
       <div>
         <label htmlFor="iq-message" className={label}>{t.anything}</label>
         <textarea id="iq-message" name="message" rows={3} defaultValue={v.message ?? defaults.message} placeholder={t.anythingPh} className={cn(field, 'resize-none')} />

@@ -2,6 +2,7 @@
 
 import { getSessionUser } from '@/lib/auth';
 import { createInquiry, getListingById } from '@/lib/data';
+import { answersFromForm } from '@/lib/booking-fields';
 import { isCategory, isRequestType } from '@/lib/site';
 
 export type InquiryState = {
@@ -27,7 +28,7 @@ export async function submitInquiry(_prev: InquiryState, form: FormData): Promis
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'That email doesn’t look right.';
   if (Object.keys(errors).length) {
     const values = Object.fromEntries(
-      ["name", "phone", "email", "travelDate", "travelers", "message"].map((k) => [k, text(form, k, 2000)]),
+      [...form.keys()].filter((k) => ["name", "phone", "email", "travelDate", "travelers", "message"].includes(k) || k.startsWith("ans.")).map((k) => [k, text(form, k, 2000)]),
     );
     return { ok: false, message: "Please check the highlighted fields.", errors, values };
   }
@@ -35,6 +36,7 @@ export async function submitInquiry(_prev: InquiryState, form: FormData): Promis
   const listingId = Number(form.get('listingId')) || null;
   const listing = listingId ? await getListingById(listingId) : null;
   const category = text(form, 'category', 20);
+  const kind = listing?.category ?? (isCategory(category) || isRequestType(category) ? category : '');
   const travelers = Number(form.get('travelers')) || null;
   const user = await getSessionUser();
 
@@ -43,13 +45,14 @@ export async function submitInquiry(_prev: InquiryState, form: FormData): Promis
       listingId: listing?.id ?? null,
       userId: user?.id ?? null,
       listingTitle: listing?.title ?? text(form, 'listingTitle', 200),
-      category: listing?.category ?? (isCategory(category) || isRequestType(category) ? category : ''),
+      category: kind,
       name,
       phone,
       email,
       travelDate: text(form, 'travelDate', 40),
       travelers: travelers && travelers > 0 && travelers < 1000 ? travelers : null,
       message: [text(form, 'message', 2000), text(form, 'attachment', 3000)].filter(Boolean).join('\n\n'),
+      answers: answersFromForm(kind, form),
     });
   } catch (error) {
     console.error('Failed to save inquiry', error);

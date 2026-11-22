@@ -91,6 +91,7 @@ const en = {
     fullName: 'Full name *', namePh: 'Your name', phone: 'Phone / WhatsApp *', email: 'Email', travelDate: 'Travel date', travellers: 'Travellers',
     anything: 'Anything we should know?', anythingPh: 'Budget, hotel preference, special requests…', send: 'Send request', sending: 'Sending…',
     noPayment: 'No payment now — our team will call you to confirm.', received: 'Request received!', cantWait: 'Can’t wait? Message us now',
+    checkIn: 'Check-in', applicants: 'Applicants', guests: 'Guests (adults)', travelFrom: 'Travel from', more: 'A few more details', optional: 'optional — helps us prepare faster', select: 'Select…',
   },
   footer: {
     helpTitle1: 'Have questions?', helpTitle2: 'We’re here to help.', helpText: 'Call our hotline or message us — our travel experts are ready to plan your next trip.',
@@ -266,6 +267,7 @@ const bn: Dict = {
     fullName: 'পূর্ণ নাম *', namePh: 'আপনার নাম', phone: 'ফোন / হোয়াটসঅ্যাপ *', email: 'ইমেইল', travelDate: 'ভ্রমণের তারিখ', travellers: 'যাত্রী',
     anything: 'আর কিছু জানাতে চান?', anythingPh: 'বাজেট, হোটেলের পছন্দ, বিশেষ অনুরোধ…', send: 'রিকোয়েস্ট পাঠান', sending: 'পাঠানো হচ্ছে…',
     noPayment: 'এখন কোনো পেমেন্ট লাগবে না — আমাদের টিম কল করে কনফার্ম করবে।', received: 'রিকোয়েস্ট পেয়েছি!', cantWait: 'অপেক্ষা করতে চান না? এখনই মেসেজ দিন',
+    checkIn: 'চেক-ইন', applicants: 'আবেদনকারী', guests: 'অতিথি (প্রাপ্তবয়স্ক)', travelFrom: 'ভ্রমণ শুরু', more: 'আরও কিছু তথ্য', optional: 'ঐচ্ছিক — দ্রুত প্রস্তুতিতে সাহায্য করে', select: 'বাছাই করুন…',
   },
   footer: {
     helpTitle1: 'কোনো প্রশ্ন আছে?', helpTitle2: 'আমরা আছি আপনার পাশে।', helpText: 'হটলাইনে কল করুন বা মেসেজ দিন — আমাদের ট্রাভেল এক্সপার্টরা আপনার পরের ভ্রমণ সাজাতে প্রস্তুত।',

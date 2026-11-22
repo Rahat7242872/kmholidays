@@ -1,4 +1,5 @@
 import { KmLogo } from '@/components/site/brand';
+import { formatAnswer } from '@/lib/booking-fields';
 import { DOC_TYPES, orderNo, taka, totals } from '@/lib/order-document';
 import { contacts, formatPrice, requestLabel, site } from '@/lib/site';
 import type { Customer, Inquiry, Listing } from '@/lib/types';
@@ -87,6 +88,14 @@ export function OrderPdf({ inquiry, listing, customer }: { inquiry: Inquiry; lis
             </dl>
           </Box>
         </div>
+
+        {inquiry.answers.length > 0 && (
+          <Box title={inquiry.category === 'visa' ? 'Applicant information' : 'Booking information'}>
+            <dl className="grid gap-x-6 sm:grid-cols-2 print:grid-cols-2">
+              {inquiry.answers.map((a) => <Row key={a.key} label={a.label} value={formatAnswer(a)} />)}
+            </dl>
+          </Box>
+        )}
 
         {doc.info?.length ? (
           <Box title="Details">
